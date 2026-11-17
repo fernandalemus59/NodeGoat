@@ -33,6 +33,16 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
 
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'NodeGoat'
+          path: '.'
+          format: 'JSON'
+          out: 'dependency-check-reports'
+          args: >
+            --failOnCVSS 7
+
       - name: Upload security reports
         uses: actions/upload-artifact@v4
         if: always()
@@ -41,3 +51,4 @@ jobs:
           path: |
             semgrep-report.json
             sbom.cyclonedx.json
+            dependency-check-reports/
